@@ -180,6 +180,14 @@ void TIM1_UP_TIM10_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
+	if (LL_USART_IsEnabledIT_RXNE(USART1))
+	{
+		asm("nop");
+	}
+	if (LL_USART_IsEnabledIT_TXE(USART1) || LL_USART_IsEnabledIT_TC(USART1))
+	{
+		asm("nop");
+	}
 
   /* USER CODE END USART1_IRQn 0 */
   /* USER CODE BEGIN USART1_IRQn 1 */
