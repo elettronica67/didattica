@@ -50,3 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+f401/progetto_f401/.gitignore
+f401/.gitignore
+f401/progetto_f401/.settings/language.settings.xml
+f401/progetto_f401/.settings/stm32cubeide.project.prefs
