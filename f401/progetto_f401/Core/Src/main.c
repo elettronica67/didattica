@@ -259,9 +259,21 @@ static void MX_USART1_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+
+  /**/
+  LL_GPIO_ResetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
+
+  /**/
+  GPIO_InitStruct.Pin = pin_led_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(pin_led_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -282,7 +294,9 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	  //LL_GPIO_TogglePin(pin_led_GPIO_Port, pin_led_Pin);
+	  LL_GPIO_SetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
+	  osDelay(30);
   }
   /* USER CODE END 5 */
 }
@@ -300,7 +314,8 @@ void StartTask02(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	  LL_GPIO_ResetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
+    osDelay(30);
   }
   /* USER CODE END StartTask02 */
 }
