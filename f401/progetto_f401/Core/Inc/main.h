@@ -72,6 +72,8 @@ void Error_Handler(void);
 #define pin_button_GPIO_Port GPIOC
 #define pin_led_Pin LL_GPIO_PIN_5
 #define pin_led_GPIO_Port GPIOA
+#define pin_debug_Pin LL_GPIO_PIN_8
+#define pin_debug_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

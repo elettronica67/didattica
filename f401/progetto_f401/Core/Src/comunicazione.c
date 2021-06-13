@@ -43,6 +43,7 @@ void main_communication (void)
 //-----------------------------------------------------------------------------
 void tx_usart6_interrupt (void)
 {
+	LL_GPIO_TogglePin(pin_debug_GPIO_Port, pin_debug_Pin);
 	LL_USART_DisableIT_TC(USART6);
 }
 
