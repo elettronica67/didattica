@@ -59,6 +59,7 @@
 extern TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN EV */
+extern void tx_usart6_interrupt (void);
 
 /* USER CODE END EV */
 
@@ -175,24 +176,24 @@ void TIM1_UP_TIM10_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles USART1 global interrupt.
+  * @brief This function handles USART6 global interrupt.
   */
-void USART1_IRQHandler(void)
+void USART6_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART1_IRQn 0 */
-	if (LL_USART_IsEnabledIT_RXNE(USART1))
+  /* USER CODE BEGIN USART6_IRQn 0 */
+	if (LL_USART_IsEnabledIT_RXNE(USART6))
 	{
 		asm("nop");
 	}
-	if (LL_USART_IsEnabledIT_TXE(USART1) || LL_USART_IsEnabledIT_TC(USART1))
+	if (LL_USART_IsEnabledIT_TXE(USART6) || LL_USART_IsEnabledIT_TC(USART6))
 	{
-		asm("nop");
+		tx_usart6_interrupt();
 	}
 
-  /* USER CODE END USART1_IRQn 0 */
-  /* USER CODE BEGIN USART1_IRQn 1 */
+  /* USER CODE END USART6_IRQn 0 */
+  /* USER CODE BEGIN USART6_IRQn 1 */
 
-  /* USER CODE END USART1_IRQn 1 */
+  /* USER CODE END USART6_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

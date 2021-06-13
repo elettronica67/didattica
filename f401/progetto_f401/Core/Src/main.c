@@ -42,17 +42,17 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for main_task */
+osThreadId_t main_taskHandle;
+const osThreadAttr_t main_task_attributes = {
+  .name = "main_task",
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
-/* Definitions for myTask02 */
-osThreadId_t myTask02Handle;
-const osThreadAttr_t myTask02_attributes = {
-  .name = "myTask02",
+/* Definitions for second_task */
+osThreadId_t second_taskHandle;
+const osThreadAttr_t second_task_attributes = {
+  .name = "second_task",
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 128 * 4
 };
@@ -63,11 +63,13 @@ const osThreadAttr_t myTask02_attributes = {
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART1_UART_Init(void);
-void StartDefaultTask(void *argument);
-void StartTask02(void *argument);
+static void MX_USART6_UART_Init(void);
+void start_main_task(void *argument);
+void start_second_task(void *argument);
 
 /* USER CODE BEGIN PFP */
+extern void init_communication (void);
+extern void main_communication (void);
 
 /* USER CODE END PFP */
 
@@ -104,7 +106,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART1_UART_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -129,11 +131,11 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of main_task */
+  main_taskHandle = osThreadNew(start_main_task, NULL, &main_task_attributes);
 
-  /* creation of myTask02 */
-  myTask02Handle = osThreadNew(StartTask02, NULL, &myTask02_attributes);
+  /* creation of second_task */
+  second_taskHandle = osThreadNew(start_second_task, NULL, &second_task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -198,44 +200,44 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief USART1 Initialization Function
+  * @brief USART6 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_USART1_UART_Init(void)
+static void MX_USART6_UART_Init(void)
 {
 
-  /* USER CODE BEGIN USART1_Init 0 */
+  /* USER CODE BEGIN USART6_Init 0 */
 
-  /* USER CODE END USART1_Init 0 */
+  /* USER CODE END USART6_Init 0 */
 
   LL_USART_InitTypeDef USART_InitStruct = {0};
 
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* Peripheral clock enable */
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1);
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART6);
 
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-  /**USART1 GPIO Configuration
-  PA9   ------> USART1_TX
-  PA10   ------> USART1_RX
+  /**USART6 GPIO Configuration
+  PA11   ------> USART6_TX
+  PA12   ------> USART6_RX
   */
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_9|LL_GPIO_PIN_10;
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_11|LL_GPIO_PIN_12;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /* USART1 interrupt Init */
-  NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
-  NVIC_EnableIRQ(USART1_IRQn);
+  /* USART6 interrupt Init */
+  NVIC_SetPriority(USART6_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
+  NVIC_EnableIRQ(USART6_IRQn);
 
-  /* USER CODE BEGIN USART1_Init 1 */
+  /* USER CODE BEGIN USART6_Init 1 */
 
-  /* USER CODE END USART1_Init 1 */
+  /* USER CODE END USART6_Init 1 */
   USART_InitStruct.BaudRate = 115200;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
@@ -243,12 +245,12 @@ static void MX_USART1_UART_Init(void)
   USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
   USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
   USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
-  LL_USART_Init(USART1, &USART_InitStruct);
-  LL_USART_ConfigAsyncMode(USART1);
-  LL_USART_Enable(USART1);
-  /* USER CODE BEGIN USART1_Init 2 */
+  LL_USART_Init(USART6, &USART_InitStruct);
+  LL_USART_ConfigAsyncMode(USART6);
+  LL_USART_Enable(USART6);
+  /* USER CODE BEGIN USART6_Init 2 */
 
-  /* USER CODE END USART1_Init 2 */
+  /* USER CODE END USART6_Init 2 */
 
 }
 
@@ -281,43 +283,45 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_start_main_task */
 /**
-  * @brief  Function implementing the defaultTask thread.
+  * @brief  Function implementing the main_task thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+/* USER CODE END Header_start_main_task */
+void start_main_task(void *argument)
 {
   /* USER CODE BEGIN 5 */
+	init_communication();
   /* Infinite loop */
   for(;;)
   {
-	  //LL_GPIO_TogglePin(pin_led_GPIO_Port, pin_led_Pin);
-	  LL_GPIO_SetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
 	  osDelay(30);
+	  main_communication();
   }
   /* USER CODE END 5 */
 }
 
-/* USER CODE BEGIN Header_StartTask02 */
+/* USER CODE BEGIN Header_start_second_task */
 /**
-* @brief Function implementing the myTask02 thread.
+* @brief Function implementing the second_task thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartTask02 */
-void StartTask02(void *argument)
+/* USER CODE END Header_start_second_task */
+void start_second_task(void *argument)
 {
-  /* USER CODE BEGIN StartTask02 */
-  /* Infinite loop */
-  for(;;)
-  {
-	  LL_GPIO_ResetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
-    osDelay(30);
-  }
-  /* USER CODE END StartTask02 */
+  /* USER CODE BEGIN start_second_task */
+	/* Infinite loop */
+	for(;;)
+	{
+		LL_GPIO_TogglePin(pin_led_GPIO_Port, pin_led_Pin);
+		//LL_GPIO_SetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
+		osDelay(500);
+
+	}
+  /* USER CODE END start_second_task */
 }
 
  /**
