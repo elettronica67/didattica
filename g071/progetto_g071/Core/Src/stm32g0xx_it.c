@@ -47,7 +47,7 @@ extern uint32_t				sys_tick_cnt;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+extern void tx_usart1_rx_interrupt (void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -149,7 +149,7 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 0 */
 	if (LL_USART_IsEnabledIT_RXNE_RXFNE(USART1))
 	{
-		asm("nop");
+		tx_usart1_rx_interrupt();
 	}
 	if (LL_USART_IsEnabledIT_TXE_TXFNF(USART1) || LL_USART_IsEnabledIT_TC(USART1))
 	{

@@ -50,7 +50,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+extern void init_communication(void);
+extern void main_communication (void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -103,12 +104,16 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  init_communication();
+	__enable_irq();
   while (1)
   {
 		if ((sys_tick_cnt - loc_tim) >= 30)
 		{
 			loc_tim = sys_tick_cnt;
-			LL_GPIO_TogglePin(pin_led_GPIO_Port, pin_led_Pin);
+//			LL_GPIO_TogglePin(pin_led_GPIO_Port, pin_led_Pin);
+//			LL_GPIO_TogglePin(pin_debug_GPIO_Port, pin_debug_Pin);
+			main_communication();
 		}
     /* USER CODE END WHILE */
 
@@ -248,9 +253,13 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
   LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOC);
+  LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOD);
 
   /**/
   LL_GPIO_ResetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
+
+  /**/
+  LL_GPIO_ResetOutputPin(pin_debug_GPIO_Port, pin_debug_Pin);
 
   /**/
   GPIO_InitStruct.Pin = pin_led_Pin;
@@ -259,6 +268,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(pin_led_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = pin_debug_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(pin_debug_GPIO_Port, &GPIO_InitStruct);
 
 }
 

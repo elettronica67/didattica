@@ -73,6 +73,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define pin_led_Pin LL_GPIO_PIN_5
 #define pin_led_GPIO_Port GPIOA
+#define pin_debug_Pin LL_GPIO_PIN_9
+#define pin_debug_GPIO_Port GPIOD
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
