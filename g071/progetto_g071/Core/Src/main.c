@@ -53,6 +53,7 @@ static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 extern void init_communication(void);
 extern void main_communication (void);
+extern void lettura_dati_lettori (void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -117,6 +118,7 @@ int main(void)
 //			LL_GPIO_TogglePin(pin_led_GPIO_Port, pin_led_Pin);
 //			LL_GPIO_TogglePin(pin_debug_GPIO_Port, pin_debug_Pin);
 			main_communication();
+			lettura_dati_lettori();
 			contatore.byte_a++;
 		}
     /* USER CODE END WHILE */
