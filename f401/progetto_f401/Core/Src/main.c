@@ -69,7 +69,7 @@ void start_second_task(void *argument);
 
 /* USER CODE BEGIN PFP */
 extern void init_communication (void);
-extern void main_communication (void);
+extern void main_communication (byte valore);
 
 /* USER CODE END PFP */
 
@@ -320,11 +320,70 @@ void start_main_task(void *argument)
 {
   /* USER CODE BEGIN 5 */
 	init_communication();
+	uint8_t stati = 0;
   /* Infinite loop */
   for(;;)
   {
 	  osDelay(30);
-	  main_communication();
+
+	  //	  if (LL_GPIO_IsInputPinSet(pin_button_GPIO_Port, pin_button_Pin))
+	  //		  main_communication(0);
+	  //	  else
+	  //		  main_communication(1);
+	  switch (stati) {
+	  case 0:
+		  main_communication(0);
+		  //pressione del pulsante
+		  if (!LL_GPIO_IsInputPinSet(pin_button_GPIO_Port, pin_button_Pin))
+		  {
+			  stati = 1;
+		  }
+		  break;
+	  case 1:
+		  main_communication(1);
+		  //rilascio del pulsante
+		  if (LL_GPIO_IsInputPinSet(pin_button_GPIO_Port, pin_button_Pin))
+		  {
+			  stati = 2;
+		  }
+		  break;
+	  case 2:
+		  main_communication(1);
+		  //pressione del pulsante
+		  if (!LL_GPIO_IsInputPinSet(pin_button_GPIO_Port, pin_button_Pin))
+		  {
+			  stati = 3;
+		  }
+		  break;
+	  case 3:
+		  main_communication(2);
+		  //rilascio del pulsante
+		  if (LL_GPIO_IsInputPinSet(pin_button_GPIO_Port, pin_button_Pin))
+		  {
+			  stati = 4;
+		  }
+		  break;
+	  case 4:
+		  main_communication(2);
+		  //pressione del pulsante
+		  if (!LL_GPIO_IsInputPinSet(pin_button_GPIO_Port, pin_button_Pin))
+		  {
+			  stati = 5;
+		  }
+		  break;
+	  case 5:
+		  main_communication(0);
+		  //rilascio del pulsante
+		  if (LL_GPIO_IsInputPinSet(pin_button_GPIO_Port, pin_button_Pin))
+		  {
+			  stati = 0;
+		  }
+		  break;
+	  default:
+		  break;
+
+	  }
+	  //osSemaphoreAcquire(semaphore_id, timeout)
   }
   /* USER CODE END 5 */
 }

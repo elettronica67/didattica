@@ -22,7 +22,7 @@ void init_communication (void)
 }
 
 //-----------------------------------------------------------------------------
-void main_communication (void)
+void main_communication (byte valore)
 {
 	//cancello tutti i flag di errore
 	clear_usart6_error_flags();
@@ -32,10 +32,7 @@ void main_communication (void)
 	//interrupt su fine carattere
 	LL_USART_DisableIT_TXE(USART6);
 	LL_USART_ClearFlag_TC(USART6);
-	if (LL_GPIO_IsInputPinSet(pin_button_GPIO_Port, pin_button_Pin))
-		LL_USART_TransmitData8(USART6, 0x00);
-	else
-		LL_USART_TransmitData8(USART6, 0x01);
+	LL_USART_TransmitData8(USART6, valore);
 	LL_USART_EnableIT_TC(USART6);
 	LL_USART_EnableDirectionTx(USART6);
 }

@@ -43,6 +43,7 @@
 
 /* USER CODE BEGIN PV */
 uint32_t				sys_tick_cnt;
+byte_io 				contatore;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,7 +107,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   init_communication();
 	__enable_irq();
-  while (1)
+	contatore.byte_a = 0;
+
+	while (1)
   {
 		if ((sys_tick_cnt - loc_tim) >= 30)
 		{
@@ -114,6 +117,7 @@ int main(void)
 //			LL_GPIO_TogglePin(pin_led_GPIO_Port, pin_led_Pin);
 //			LL_GPIO_TogglePin(pin_debug_GPIO_Port, pin_debug_Pin);
 			main_communication();
+			contatore.byte_a++;
 		}
     /* USER CODE END WHILE */
 

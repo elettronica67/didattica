@@ -10,6 +10,9 @@ void clear_usart1_error_flags (void);
 
 //-----------------------------------------------------------------------------
 #include "main.h"
+extern byte_io	contatore;
+
+uint8_t carattere_ricevuto = 0;
 
 //-----------------------------------------------------------------------------
 void init_communication (void)
@@ -29,6 +32,18 @@ void init_communication (void)
 //-----------------------------------------------------------------------------
 void main_communication (void)
 {
+	uint8_t bit_di_riferimento;
+	if (carattere_ricevuto == 0)
+		bit_di_riferimento = contatore.bit.b3;
+	else if (carattere_ricevuto == 1)
+		bit_di_riferimento = contatore.bit.b2;
+	else
+		bit_di_riferimento = contatore.bit.b1;
+
+	if (bit_di_riferimento != 0)
+		LL_GPIO_ResetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
+	else
+		LL_GPIO_SetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
 }
 
 //-----------------------------------------------------------------------------
@@ -43,10 +58,11 @@ void tx_usart1_rx_interrupt (void)
 		return;
 	}
 	LL_GPIO_TogglePin(pin_debug_GPIO_Port, pin_debug_Pin);
-	if (!rec)
-		LL_GPIO_ResetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
-	else
-		LL_GPIO_SetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
+	carattere_ricevuto = rec;
+//	if (!rec)
+//		LL_GPIO_ResetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
+//	else
+//		LL_GPIO_SetOutputPin(pin_led_GPIO_Port, pin_led_Pin);
 	init_communication();
 }
 

@@ -76,6 +76,23 @@ void Error_Handler(void);
 #define pin_debug_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
 
+typedef uint8_t		byte;
+
+//------------------------------------------------------------------------------
+//struttura di bits
+typedef struct
+{
+	byte	b0:1,b1:1,b2:1,b3:1,b4:1,b5:1,b6:1,b7:1;
+}bits_1;
+
+//------------------------------------------------------------------------------
+//struttura di una porta di i/o e delle variabili gestite a bit
+typedef union byte_io
+{
+	byte 		byte_a;
+	bits_1	bit;
+}byte_io;
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
